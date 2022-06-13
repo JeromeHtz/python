@@ -43,7 +43,6 @@ def list_to_9(n,t=0) :
         n = n-reverse
         return(list_to_9(n,t))
 
-
 def premier(n) :
     if n<=1 :
         raise Exception ("n must be > 1")
@@ -121,48 +120,32 @@ def binaire(i) :
         i+=1
     return liste2
 
-def complement_1(x) :
-    if x<0 :
-        x = -1*x
-    liste = binaire(x)
-    liste2 = []
-    i = len(liste)
-    while i != 0 :
-        a=liste.pop()
-        if a==1 :
-            liste2.append(0)
-        else :
-            liste2.append(1)
-        i-=1
-    while len(liste2)!=0 :
-        a = liste2.pop() 
-        liste.append(a)
-    return liste
-
-def complement_2(x) :
-    liste = complement_1(x)
-    liste2 =[]
-    retenue = 1
-    while len(liste)!=0 :
-        a = liste.pop()
-        a = a + retenue
-        if a == 2 :
-            a=0
-            retenue=1
-        elif a==1 :
-            retenue=0
-        liste2.append(a)
-    while len(liste2)!=0 :
-        a = liste2.pop() 
-        liste.append(a)
-    return liste
-
 def retourner(liste2) :
     liste=[]
-    while len(liste2)!=0 :
-        a = liste2.pop() 
+    l=len(liste2)
+    while l!=0 :
+        a = liste2.pop()
+        l-=1
         liste.append(a)
     return liste
+
+def complement_2(L) :
+    bool = False
+    #modifions L en place
+    l=len(L)
+    if l>8 :
+        raise Exception("Undifined.")
+    while l>=0 :
+        if bool==True and L[l]==0 :
+            L[l]=1
+        elif bool==True and L[l]==1 :
+            L[l]=0
+        elif L[l]==1 :
+            bool=True
+        l-=1
+    return L
+
+
 
 def from_int(x) :
     if x>0 :
@@ -198,63 +181,6 @@ def search_indexes(liste,val) :
                 premier = i
         return premier,last_ind
 
-def multiplication_11(n_liste) :
-    liste = []
-    i = len(n_liste)
-    liste.append(n_liste[i-1])
-    retenue = 0
-    resultat = 0
-    while i!= 0 :
-        i-=1
-        if i==0 :
-            resultat = n_liste[i]+retenue
-            if resultat >= 10 :
-                liste.append(resultat-10)
-                retenue = 1
-                liste.append(retenue)
-            else :
-                liste.append(resultat)
-        else :
-            resultat = n_liste[i]+n_liste[i-1]+retenue
-            if resultat >=10 :
-                liste.append(resultat-10)
-                retenue = 1
-            else :
-                liste.append(resultat)
-                retenue = 0
-    return retourner(liste)
-
-def mult_10(n,i) :
-    if i == 0 : 
-        return 1
-    else :
-        return n*mult_10(n,i-1)
-
-
-def mult_11(n) :
-    n_liste = []
-    j=0
-    i = int(input("nombre de chiffres de votre nombre : "))
-    i=i-1
-    while i!=-1 :
-        n_liste.append(n//(mult_10(10,i)))
-        n=n%(mult_10(10,i))
-        i-=1
-        j+=1
-    if n_liste[0]>9 or n_liste[0]<1 :
-        raise Exception("Vous ne savez pas compter.")
-    else :
-        liste = multiplication_11(n_liste)
-        i = 0
-        j=len(liste)-1
-        resultat = 0
-        while j>=0 :
-            resultat = liste[j]*mult_10(10,i) + resultat
-            i+=1
-            j-=1
-        return resultat
-print(mult_11(56))
-
 def int_to_list(n) :
     liste = []
     i = int(input("nombre de chiffres de votre nombre : "))
@@ -266,6 +192,30 @@ def int_to_list(n) :
     if n!=0 :
         return ("vous ne savez pas compter")
     return liste
+
+def insert(x,L) :
+    L.append(0)
+    i, intermediaire = 0, 0
+    while i<len(L) :
+        if x<L[i] :
+            intermediaire = L[i]
+            L[i] = x
+            x = intermediaire
+        elif i==len(L)-1 and L[i]==0 :
+            L[i] = x
+        i+=1
+    return L
+
+def build_list(n) :
+    import random
+    liste = []
+    for i in range(n) :
+        nombre = random.randint(0,100)
+        liste.append(nombre)
+    return liste
+
+
+ 
 
 def select_sort(L) :
     for i in range(len(L)-1) :
@@ -281,21 +231,92 @@ def select_sort(L) :
             (L[i], L[indice]) = (L[indice],L[i])
     return L
 
-def insert(x,L) :
-    L.append(0)
-    i, intermediaire = 0, 0
-    while i<len(L) :
-        if x<L[i] :
-            intermediaire = L[i]
-            L[i] = x
-            x = intermediaire
-        elif i==len(L)-1 and L[i]==0 :
-            L[i] = x
-        i+=1
+def supprimer_enplace(L,k) :
+    l = len(L)
+    if k<0 or k>=l :
+        raise Exception("supprimer_enplace : indice invalide")
+    else :
+        """
+        le but est de deplacer la valeur a l'indice k a la fin
+        et d'utiliser la fonction L.pop()
+        en se mettant comme contrainte de ne pas utiliser 
+        d'autres fonctions que celles-ci :
+            -> L.pop() (et non L.remove(L[k]))
+            -> L.append(argument)
+            -> len(L)
+        """
+        for i in range(k+1, l) :
+            L[k],L[i] = L[i], L[k]
+        L.pop() #supprime le dernier element de la liste
+
+def supprimer_pas_enplace(L,k) :
+    l = len(L)
+    if k<0 or k>=l :
+        raise Exception("supprimer_pas_enplace : inice invalide")
+    else :
+        L1 = []
+        for i in range(l) :
+            if i!= k :
+                L1.append(L[i])
+        return L1
+
+#print(l)
+#liste = build_list(40000000)
+#liste1 = liste
+
+"""def complexite() :
+    import time
+    t = time.time()
+    supprimer_enplace(liste,39999999)
+    print("1 :",time.time()-t)"""
+
+
+#complexite()
+#complexite_()
+
+"""
+ecrire une fonction qui retourne le caractere le plus
+frequent d'une chaine, ainsi que son nombre
+d'occurences
+"""
+def init_list(n,val) :
+    L = []
+    for i in range(n) :
+        L.append(val)
     return L
+def histog_3(str) :
+    max, l = 0, len(str)
+    lettr = ''
+    L_lettre = []
+    for i in range(l) :
+        nbr_char = 1
+        lettre = str[i]
+        if L_lettre == [] :
+            L_lettre.append((nbr_char,lettre))
+        else :
+            j=0
+            l1 = len(L_lettre)
+            (occ,Lettre) = L_lettre[0]
+            while j<l1 and Lettre!=lettre :
+                (occ,Lettre) = L_lettre[j]
+                j+=1
+            if Lettre==lettre and j==0 :
+                occ+=nbr_char
+                L_lettre[j]=(occ,Lettre)
+            elif Lettre==lettre :
+                occ+=nbr_char
+                L_lettre[j-1]=(occ,Lettre)
+            else :
+                #(occ,Lettre) = L_lettre[j-1]
+                L_lettre.append((nbr_char,lettre))
+            if occ>max :
+                max=occ
+                lettr = lettre
+    return max,lettr
 
 def dicho_list(x,L) :
     left, right = 0, len(L)
+    l=right
     middle = right//2
     while left != right and L[middle]!=x :
         if x < L[middle] :
@@ -303,7 +324,40 @@ def dicho_list(x,L) :
         else :
             left = middle + 1
         middle = (left + right)//2
-    if L[middle]==x :
+    if middle<l and L[middle]==x :
         return middle
     else :
         return right
+
+def init_list(n,val) :
+    L = []
+    for i in range(n) :
+        L.append(val)
+    return L
+
+def erathostene(n) :
+    L = init_list(n+1,True)
+    L_primes = []
+    i=2
+    t=1
+    while i<=n :
+        t+=1
+        j=i
+        while j<n :
+            j+=1
+            if j%i==0 and L[j]==True :
+                L[j]=False
+        if L[i]==True :
+            L_primes.append(i)
+        i+=1
+    print(t)
+    return L_primes
+
+
+def complexite_() :
+    import time
+    t = time.time()
+    print(erathostene(200))
+    print("Temps d'exécution :",time.time()-t)
+#complexite_()
+

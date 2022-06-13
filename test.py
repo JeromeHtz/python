@@ -213,3 +213,68 @@ resultat = int#(input("saisir un nombre : "))
 
 
 
+def palindrome_1(str) :
+    i,j = 0, len(str)-1
+    bool_i, bool_j = False, False
+    b = True
+    while j>i and b :
+        if str[i]==" " and bool_i==False :
+            i+=1
+            bool_i = True
+        if str[j]==" " and bool_j==False :
+            j-=1
+            bool_j = True
+        if str[i]==str[j] and str[i]!=" " and  str[j]!=" ":
+            i,j = i+1, j-1
+            bool_i, bool_j = False, False
+        else :
+            b=False
+    return b
+
+
+def complement_2(binaire) :
+    #binaire est de type string
+    string = ""
+    i,bool = len(binaire) - 1, False
+    while i>=0 :
+        if binaire[i]=='1' and bool == False :
+            string = '1' + string
+            bool = True
+        elif bool==True :
+            if binaire[i]=='1' :
+                string = '0' + string
+            if binaire[i]=='0' :
+                string = '1' + string
+        else :
+            string = binaire[i] + string
+        i-=1
+    return string
+
+def binaire_non_signe(n) :
+    if n==1 :
+        return '1'
+    elif n==0 :
+        return '0'
+    else :
+        return binaire_non_signe(n//2) + str(n%2) + ""
+
+def binaire_signe(n,i) :
+    if n>=0 :
+        print("ici")
+        string = binaire_non_signe(n)
+        taille = len(string)
+        i-=taille
+        while i>0 :
+            string = '0' + string
+            i-=1
+        return string
+    else :
+        print("la")
+        string = binaire_non_signe(-1*n)
+        taille = len(string)
+        i-=taille
+        while i>0 :
+            string = '0' + string
+            i-=1
+        return complement_2(string)
+print(binaire_signe(-42,8))
