@@ -120,32 +120,50 @@ def binaire(i) :
         i+=1
     return liste2
 
-def retourner(liste2) :
-    liste=[]
-    l=len(liste2)
-    while l!=0 :
-        a = liste2.pop()
-        l-=1
+def complement_1(x) :
+    if x<0 :
+        x = -1*x
+    liste = binaire(x)
+    liste2 = []
+    i = len(liste)
+    while i != 0 :
+        a=liste.pop()
+        if a==1 :
+            liste2.append(0)
+        else :
+            liste2.append(1)
+        i-=1
+    while len(liste2)!=0 :
+        a = liste2.pop() 
         liste.append(a)
     return liste
 
-def complement_2(L) :
-    bool = False
-    #modifions L en place
-    l=len(L)
-    if l>8 :
-        raise Exception("Undifined.")
-    while l>=0 :
-        if bool==True and L[l]==0 :
-            L[l]=1
-        elif bool==True and L[l]==1 :
-            L[l]=0
-        elif L[l]==1 :
-            bool=True
+def complement_2(x) :
+    liste = complement_1(x)
+    liste2 =[]
+    retenue = 1
+    while len(liste)!=0 :
+        a = liste.pop()
+        a = a + retenue
+        if a == 2 :
+            a=0
+            retenue=1
+        elif a==1 :
+            retenue=0
+        liste2.append(a)
+    while len(liste2)!=0 :
+        a = liste2.pop() 
+        liste.append(a)
+    return liste
+
+def retourner(liste2) :
+    liste=[]
+    l = len(liste2)
+    while l!=0 :
+        a = liste2.pop() 
+        liste.append(a)
         l-=1
-    return L
-
-
+    return liste
 
 def from_int(x) :
     if x>0 :
@@ -180,6 +198,12 @@ def search_indexes(liste,val) :
             elif liste[i]==val :
                 premier = i
         return premier,last_ind
+
+def mult_10(n,i) :
+    if i == 0 : 
+        return 1
+    else :
+        return n*mult_10(n,i-1)
 
 def int_to_list(n) :
     liste = []
@@ -359,5 +383,5 @@ def complexite_() :
     t = time.time()
     print(erathostene(200))
     print("Temps d'exécution :",time.time()-t)
-#complexite_()
+complexite_()
 
